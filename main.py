@@ -1,7 +1,7 @@
 import streamlit as st
 from ui_helper import MancalaGame, GameAI
     
-
+st.title("Mancala Putra Petir")
 
 def render_button(ph,game_obj):
     _, col2, col3, col4, col5, col6, col7, _ = ph.columns(8)
