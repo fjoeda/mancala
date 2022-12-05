@@ -416,7 +416,7 @@ class GameAI:
             temp_board_list = []
 
             root_board, is_continue = GameAI.make_temp_move(board.copy(),playerTurn, pit)
-            final_score = root_board["1"] - root_board["2"]
+            final_score = root_board["1"] - root_board["2"] 
             
             if is_continue:
                 for pit in PLAYER_1_PITS:
@@ -446,6 +446,60 @@ class GameAI:
                 for i, pit in enumerate(PLAYER_2_PITS_REVERSE):
                     temp_board, is_continue = GameAI.make_temp_move(root_board.copy(),playerTurn, pit)
                     score = temp_board["2"] - temp_board["1"]
+                    eval_score.append(score)
+                    temp_board_list.append(temp_board)
+                min_eval = -999
+                selected_idx = 0
+
+                for i, score in enumerate(eval_score):
+                    if score > min_eval and board[PLAYER_2_PITS_REVERSE[i]] != 0:
+                        selected_idx = i
+                        min_eval = score
+
+            
+                return GameAI.evaluate_move(root_board.copy(), playerTurn, PLAYER_2_PITS_REVERSE[selected_idx])
+
+        
+        return final_score
+
+    @staticmethod
+    def evaluate_move_proritize_continue(board, playerTurn, pit):
+        PLAYER_2_PITS_REVERSE  = [PLAYER_2_PITS[i] for i in range(len(PLAYER_2_PITS)-1,-1,-1)]
+        if playerTurn == '1':
+            eval_score = []
+            temp_board_list = []
+
+            root_board, is_continue = GameAI.make_temp_move(board.copy(),playerTurn, pit)
+            final_score = (root_board["1"] - root_board["2"]) + (int(is_continue) * 10)
+            
+            if is_continue:
+                for pit in PLAYER_1_PITS:
+                    temp_board, is_continue = GameAI.make_temp_move(root_board.copy(),playerTurn, pit)
+                    score = (root_board["1"] - root_board["2"]) + (int(is_continue) * 10)
+                    eval_score.append(score)
+                    temp_board_list.append(temp_board)
+                min_eval = -999
+                selected_idx = 0
+
+                for i, score in enumerate(eval_score):
+                    if score > min_eval and board[PLAYER_1_PITS[i]] != 0:
+                        selected_idx = i
+                        min_eval = score
+
+                return GameAI.evaluate_move(root_board.copy(), playerTurn, PLAYER_1_PITS[selected_idx])
+
+            
+        else:
+            eval_score = []
+            temp_board_list = []
+            
+            root_board, is_continue = GameAI.make_temp_move(board.copy(),playerTurn, pit)
+            final_score = (root_board["2"] - root_board["1"]) + (int(is_continue) * 10)
+            
+            if is_continue:
+                for i, pit in enumerate(PLAYER_2_PITS_REVERSE):
+                    temp_board, is_continue = GameAI.make_temp_move(root_board.copy(),playerTurn, pit)
+                    score = (root_board["2"] - root_board["1"]) + (int(is_continue) * 10)
                     eval_score.append(score)
                     temp_board_list.append(temp_board)
                 min_eval = -999
@@ -724,14 +778,14 @@ class GameAI:
             eval_score = []
             temp_board_list = []
             for pit in PLAYER_1_PITS:
-                score = GameAI.evaluate_move_hoarder_vs_hoarder(board.copy(),playerTurn,pit)
+                score = GameAI.evaluate_move_proritize_continue(board.copy(),playerTurn,pit)
                 eval_score.append(score)
                 #temp_board_list.append(temp_board)
             min_eval = -999
             selected_idx = 0
             #temp_board_num = 0
             for i, score in enumerate(eval_score):
-                if score >= min_eval and board[PLAYER_1_PITS[i]] != 0:
+                if score > min_eval and board[PLAYER_1_PITS[i]] != 0:
                     selected_idx = i
                     min_eval = score
 
@@ -741,14 +795,14 @@ class GameAI:
             eval_score = []
             temp_board_list = []
             for pit in PLAYER_2_PITS_REVERSE:
-                score = GameAI.evaluate_move_hoarder_vs_hoarder(board.copy(),playerTurn,pit)
+                score = GameAI.evaluate_move(board.copy(),playerTurn,pit)
                 eval_score.append(score)
                 #temp_board_list.append(temp_board)
             min_eval = -999
             selected_idx = 0
             #temp_board_num = 0
             for i, score in enumerate(eval_score):
-                if score >= min_eval and board[PLAYER_2_PITS_REVERSE[i]] != 0:
+                if score > min_eval and board[PLAYER_2_PITS_REVERSE[i]] != 0:
                     selected_idx = i
                     min_eval = score
 
