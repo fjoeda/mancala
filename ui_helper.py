@@ -67,6 +67,7 @@ class MancalaGame:
                     st.balloons()
                     st.info("Anda menang")
                 else:
+                    st.snow()
                     st.info("Anda kalah")
                 # TODO: tampilkan pemenang
             elif winner == 'tie':
@@ -115,7 +116,7 @@ class MancalaGame:
 
             
         with g1:
-            st.metric("Score A", st.session_state['board']['2'])
+            st.metric("🤖🤖", st.session_state['board']['2'])
 
         with g2:
             st.write("""---""")
@@ -136,7 +137,7 @@ class MancalaGame:
             st.write("""---""")
 
         with g8:
-            st.metric("Score B", st.session_state['board']['1'])
+            st.metric("😎😎", st.session_state['board']['1'])
             
         #with col9:
             
@@ -174,7 +175,7 @@ class MancalaGame:
 
         while seedsToSow > 0:
             self.render()
-            time.sleep(1.3)
+            time.sleep(0.5)
             pit = MancalaGame.next_pit(pit)  # Move on to the next pit.
             if (playerTurn == '1' and pit == '2') or (
                 playerTurn == '2' and pit == '1'
