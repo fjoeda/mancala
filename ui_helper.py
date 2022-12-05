@@ -36,18 +36,20 @@ class MancalaGame:
             self.initiate_state(MancalaGame.get_new_board())
             #self.render()
     
-    def initiate_state(state, board):
+    def initiate_state(self, board, is_beginning = True):
         st.session_state['player_move'] = 1
-        st.session_state['game_state'] = 'start'
+        if is_beginning:
+            st.session_state['game_state'] = 'start'
         st.session_state['board'] = board
 
-    def start(self):
+    def start(self, agent):
+        self.initiate_state(MancalaGame.get_new_board(), False)
         st.session_state['game_state'] = 'playing'
+        st.session_state['agent'] = agent
         #self.render()
 
     def restart(self):
-        self.initiate_state(MancalaGame.get_new_board())
-        self.start()
+        st.session_state['game_state'] = 'start'
     
     def make_move_player(self, pit):
         if st.session_state['board'][pit] != 0:
@@ -577,16 +579,29 @@ class GameAI:
     def move_computer(board:dict):
         PLAYER_2_PITS_REVERSE  = [PLAYER_2_PITS[i] for i in range(len(PLAYER_2_PITS)-1,-1,-1)]
         eval_score = []
-        for pit in PLAYER_2_PITS_REVERSE:
-            score = GameAI.evaluate_move_hoarder_vs_hoarder(board.copy(),'2',pit)
-            eval_score.append(score)
-            #temp_board_list.append(temp_board)
+
+        if st.session_state['agent'] == 'A' or st.session_state['agent'] == 'B':
+             for pit in PLAYER_2_PITS_REVERSE:
+                score = GameAI.evaluate_move(board.copy(),'2',pit)
+                eval_score.append(score)
+        else:
+             for pit in PLAYER_2_PITS_REVERSE:
+                score = GameAI.evaluate_move_hoarder_vs_hoarder(board.copy(),'2',pit)
+                eval_score.append(score)
+        
+                
         min_eval = -999
         selected_idx = 0
         #temp_board_num = 0
-        for i, score in enumerate(eval_score):
-            if score >= min_eval and board[PLAYER_2_PITS_REVERSE[i]] != 0:
-                selected_idx = i
-                min_eval = score
+        if st.session_state['agent'] == 'B' or st.session_state['agent'] == 'D':
+            for i, score in enumerate(eval_score):
+                if score >= min_eval and board[PLAYER_2_PITS_REVERSE[i]] != 0:
+                    selected_idx = i
+                    min_eval = score
+        else:
+            for i, score in enumerate(eval_score):
+                if score > min_eval and board[PLAYER_2_PITS_REVERSE[i]] != 0:
+                    selected_idx = i
+                    min_eval = score
 
         return PLAYER_2_PITS_REVERSE[selected_idx]
