@@ -486,13 +486,13 @@ class GameAI:
             temp_board_list = []
 
             root_board, is_continue = GameAI.make_temp_move(board.copy(),playerTurn, pit)
-            total_board = [board['D'], board['F']]
+            total_board = [board['D'], board['E']]
             final_score = (root_board["1"] - root_board["2"]) + sum(total_board)
             
             if is_continue:
                 for pit in PLAYER_1_PITS:
                     temp_board, is_continue = GameAI.make_temp_move(root_board.copy(),playerTurn, pit)
-                    total_board = [temp_board['D'], temp_board['F']]
+                    total_board = [temp_board['D'], temp_board['E']]
                     score =(root_board["1"] - root_board["2"]) + sum(total_board)
                     eval_score.append(score)
                     temp_board_list.append(temp_board)
